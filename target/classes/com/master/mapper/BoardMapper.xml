@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.master.mapper.BoardMapper">
+
+	<select id="getBoard" resultType="com.master.dto.BoardVO">
+		select * from board order by bno desc
+	</select>
+
+	<select id="readBoard" resultType="com.master.dto.BoardVO">
+		select * from board where bno=#{bno}
+	</select>
+	
+	<insert id="insertBoard" parameterType ="com.master.dto.BoardVO">
+		insert into board values(default,#{title},#{content},#{id},default,#{hit});
+	</insert>
+	
+	<update id="plussHit" parameterType="Long">
+		update board set hit = hit+1 where bno=#{bno}
+	</update>
+	
+	<update id="updateBoard">
+		update board set title=#{title}, content=#{content} where bno = #{bno}
+	</update>
+
+	<delete id="deleteBoard">
+		delete from board where bno = #{bno}
+	</delete>
+
+
+	<!-- 게시물 목록(페이징) -->
+    <select id="getListPaging" resultType="com.master.dto.BoardVO">
+        select * from ( 
+                select * 
+                from board 
+                <if test="keyword != null">
+                	<include refid="criteria"></include>
+                </if>
+                order by bno desc) as T1 
+        limit #{skip},#{amount}
+    </select>
+	
+	<!-- 게시물 총 개숫 -->
+    <select id="getTotal" resultType="int">
+        select count(*) from board 
+        <if test="keyword != null">
+        		<include refid="criteria"></include>
+       	</if>
+    </select>
+    
+         <!-- 검색 조건문 -->
+	<sql id="criteria">
+		<trim prefix="where (" suffix=")" prefixOverrides="OR">
+			<foreach collection="typeArr" item="type">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'T'.toString()">
+							title like concat('%',#{keyword},'%') 
+						</when>
+						<when test="type == 'O'.toString()">
+							content like concat('%',#{keyword},'%') 
+						</when>
+						<when test="type == 'A'.toString()">
+							id like concat('%',#{keyword},'%' )
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+	
+
+
+
+</mapper>

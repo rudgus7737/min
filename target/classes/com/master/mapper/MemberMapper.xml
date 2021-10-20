@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.master.mapper.MemberMapper">
+
+	<insert id="createMember" parameterType ="com.master.dto.MemberVO">
+		insert into member values(#{email},#{password},#{nickName},#{name},#{birth},#{phone})
+	</insert>
+	
+	<select id="getMember" resultType="com.master.dto.MemberVO">
+		select * from member
+	</select>
+	
+	<select id="emailCheck" resultType="int" >
+		select count(*) from member where email =#{email}
+	</select>
+	
+	<select id="nickNameCheck" resultType="int" >
+		select count(*) from member where nickname =#{nickName}
+	</select>
+	
+	<select id="login" resultType="com.master.dto.MemberVO" >
+		select * from member where email =#{email} and password=#{password}
+	</select>
+	
+	
+
+
+
+
+
+
+
+</mapper>
